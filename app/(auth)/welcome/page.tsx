@@ -1,22 +1,17 @@
 "use client";
 
-import axios from "axios";
 import { LucideProps } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { Heading } from "@/components/heading";
 import { LoadingSpinner } from "@/components/loading-spinner";
-import { useQuery } from "@tanstack/react-query";
+import { trpc } from "@/server/client";
 
 export default function Page() {
   const router = useRouter();
-  const { data } = useQuery({
-    queryFn: async () => {
-      const res = await axios.get("/api/auth/get-database-sync-status");
-      return res.data;
-    },
-    queryKey: ["get-database-sync-status"],
+
+  const { data } = trpc.auth.getDatabaseSyncStatus.useQuery(undefined, {
     refetchInterval: (query) => {
       return query.state.data?.isSynced ? false : 1000;
     },

@@ -2,8 +2,8 @@ import "./globals.css";
 
 import { EB_Garamond, Inter } from "next/font/google";
 
+import Provider from "@/components/provider";
 import { cn } from "@/lib/utils";
-import { Providers } from "@/providers/providers";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import type { Metadata } from "next";
@@ -34,7 +34,7 @@ export default function RootLayout({
           )}
         >
           <main className="relative flex-1 flex flex-col">
-            <Providers>{children}</Providers>
+            <Provider>{children}</Provider>
           </main>
         </body>
       </html>
