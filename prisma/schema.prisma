@@ -23,7 +23,7 @@ model User {
   createAt        DateTime        @default(now())
   updateAt        DateTime        @updatedAt
   EventCategories EventCategory[]
-  Event           Event[]
+  events          Event[]
   Quota           Quota[]
 
   @@index([email, apiKey])
@@ -33,12 +33,12 @@ model EventCategory {
   id        String   @id @default(cuid())
   name      String
   color     Int
-  emoji     String
-  User      User?    @relation(fields: [userId], references: [id])
-  userId    String?
+  emoji     String?
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Event     Event[]
+  events    Event[]
 
   @@unique([name, userId])
 }
@@ -66,7 +66,7 @@ model Event {
 }
 
 model Quota {
-  id        String   @id @unique
+  id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   year      Int

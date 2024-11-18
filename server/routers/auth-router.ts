@@ -1,10 +1,10 @@
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 
-import { procedure, router } from "../trpc";
+import { publicProcedure, router } from "../trpc";
 
 export const authRouter = router({
-  getDatabaseSyncStatus: procedure.query(async () => {
+  getDatabaseSyncStatus: publicProcedure.query(async () => {
     const auth = await currentUser();
 
     if (!auth) {

@@ -1,12 +1,21 @@
 import { appRouter } from "@/server";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import {
+  FetchCreateContextFnOptions,
+  fetchRequestHandler,
+} from "@trpc/server/adapters/fetch";
+
+import type { Context } from "@/server/trpc";
 
 const handler = async (req: Request) => {
   return await fetchRequestHandler({
     endpoint: "/api/trpc",
     router: appRouter,
     req,
-    createContext: () => ({}),
+    createContext: (opts: FetchCreateContextFnOptions): Context => {
+      return {
+        headers: opts.req.headers,
+      };
+    },
   });
 };
 
