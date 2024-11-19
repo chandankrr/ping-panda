@@ -4,6 +4,7 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { parseColor } from "@/lib/utils";
 import { CATEGORY_NAME_VALIDATOR } from "@/lib/validators/category-validator";
+import { TRPCError } from "@trpc/server";
 
 import { privateProcedure, router } from "../trpc";
 
@@ -129,4 +130,34 @@ export const categoryRouter = router({
 
     return { success: true, count: (await categories).count };
   }),
+
+  pollCategory: privateProcedure
+    .input(z.object({ name: CATEGORY_NAME_VALIDATOR }))
+    .query(async ({ input, ctx }) => {
+      const { name } = input;
+
+      const category = await prisma.eventCategory.findUnique({
+        where: {
+          name_userId: { name, userId: ctx.user.id },
+        },
+        include: {
+          _count: {
+            select: {
+              events: true,
+            },
+          },
+        },
+      });
+
+      if (!category) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Category "${name}" not found`,
+        });
+      }
+
+      const hasEvents = category._count.events > 0;
+
+      return { hasEvents };
+    }),
 });
