@@ -1,7 +1,7 @@
 "use client";
 
 import type { EventCategory } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
+import { trpc } from "@/server/client";
 
 import { EmptyCategoryState } from "./empty-category-state";
 
@@ -14,12 +14,14 @@ export const CategoryPageContent = ({
   hasEvents: initialHasEvents,
   category,
 }: CategoryPageContentProps) => {
-  const { data: poolingData } = useQuery({
-    queryKey: ["category", category.name, "hasEvents"],
-    initialData: { hasEvents: initialHasEvents },
-  });
+  const { data: pollingData } = trpc.category.pollCategory.useQuery(
+    { name: category.name },
+    {
+      initialData: { hasEvents: initialHasEvents },
+    }
+  );
 
-  if (!poolingData.hasEvents) {
+  if (!pollingData.hasEvents) {
     return <EmptyCategoryState categoryName={category.name} />;
   }
 };
