@@ -1,4 +1,5 @@
 import { addMonths, startOfMonth } from "date-fns";
+import { z } from "zod";
 
 import { FREE_QUOTA, PRO_QUOTA } from "@/config";
 import prisma from "@/lib/prisma";
@@ -36,4 +37,18 @@ export const projectRoute = router({
       resetDate,
     };
   }),
+
+  setDiscordId: privateProcedure
+    .input(z.object({ discordId: z.string().max(20) }))
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+      const { discordId } = input;
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { discordId },
+      });
+
+      return { success: true };
+    }),
 });
