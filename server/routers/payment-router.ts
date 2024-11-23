@@ -13,4 +13,10 @@ export const paymentRouter = router({
 
     return { url: session.url };
   }),
+
+  getUserPlan: privateProcedure.query(async ({ ctx }) => {
+    const { user } = ctx;
+
+    return { plan: user.plan };
+  }),
 });
