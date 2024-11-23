@@ -14,7 +14,7 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
-  const { name } = await params;
+  const { name } = params;
 
   if (typeof name !== "string") return notFound();
 
