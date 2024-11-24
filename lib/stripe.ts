@@ -26,6 +26,7 @@ export const createCheckoutSession = async ({
     metadata: {
       userId,
     },
+    billing_address_collection: "required",
   });
 
   return session;

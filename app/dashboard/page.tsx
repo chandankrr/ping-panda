@@ -32,8 +32,7 @@ export default async function Page({ searchParams }: PageProps) {
     return redirect("/welcome");
   }
 
-  const params = await searchParams;
-  const intent = params.intent;
+  const intent = searchParams.intent;
 
   if (intent === "upgrade") {
     const session = await createCheckoutSession({
@@ -44,7 +43,7 @@ export default async function Page({ searchParams }: PageProps) {
     if (session.url) redirect(session.url);
   }
 
-  const success = params.success;
+  const success = searchParams.success;
 
   return (
     <>
