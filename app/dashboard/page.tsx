@@ -34,7 +34,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   const intent = searchParams.intent;
 
-  if (intent === "upgrade") {
+  if (user.plan === "FREE" && intent === "upgrade") {
     const session = await createCheckoutSession({
       userEmail: user.email,
       userId: user.id,

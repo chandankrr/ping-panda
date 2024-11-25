@@ -1,17 +1,18 @@
-import { Check, Star } from 'lucide-react';
-import Image from 'next/image';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Check, Star } from "lucide-react";
+import Image from "next/image";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-import { DiscordMessage } from '@/components/discord-message';
-import { Heading } from '@/components/heading';
-import { Icons } from '@/components/icons';
-import { MaxWidthWrapper } from '@/components/max-width-wrapper';
-import { MockDiscordUI } from '@/components/mock-discord-ui';
-import { ShinyButton } from '@/components/shiny-button';
-import { AnimatedList } from '@/components/ui/animated-list';
+import { DiscordMessage } from "@/components/discord-message";
+import { Heading } from "@/components/heading";
+import { Icons } from "@/components/icons";
+import { MaxWidthWrapper } from "@/components/max-width-wrapper";
+import { MockDiscordUI } from "@/components/mock-discord-ui";
+import { ShinyButton } from "@/components/shiny-button";
+import { AnimatedList } from "@/components/ui/animated-list";
+import { currentUser } from "@clerk/nextjs/server";
 
-export default function Home() {
+export default async function Home() {
   const codeSnippet = `await fetch("http://localhost:3000/api/v1/events", {
   method: "POST",
   body: JSON.stringify({
@@ -26,6 +27,9 @@ export default function Home() {
     Authorization: "Bearer <YOUR_API_KEY>"
   }
 })`;
+
+  const user = await currentUser();
+  const href = user ? "/dashboard" : "/sign-up";
 
   return (
     <>
@@ -66,7 +70,7 @@ export default function Home() {
 
             <div className="w-full max-w-80">
               <ShinyButton
-                href="/sign-up"
+                href={href}
                 className="relative z-10 w-full text-base transition-shadow duration-300 shadow-lg h-14 hover:shadow-lg"
               >
                 Start For Free Today
@@ -363,7 +367,7 @@ export default function Home() {
           </div>
 
           <ShinyButton
-            href="/sign-up"
+            href={href}
             className="relative z-10 h-14 w-full max-w-xs text-base shadow-lg transition-shadow duration-300 hover:shadow-xl "
           >
             Start For Free Today
