@@ -1,6 +1,7 @@
 import { startOfDay, startOfMonth, startOfWeek } from "date-fns";
 import { z } from "zod";
 
+import { FREE_QUOTA, PRO_QUOTA } from "@/config";
 import prisma from "@/lib/prisma";
 import { parseColor } from "@/lib/utils";
 import { CATEGORY_NAME_VALIDATOR } from "@/lib/validators/category-validator";
@@ -102,7 +103,21 @@ export const categoryRouter = router({
       const { user } = ctx;
       const { name, color, emoji } = input;
 
-      // TODO: Add paid plan logic
+      const existingCategoriesCount = await prisma.eventCategory.count({
+        where: { userId: user.id },
+      });
+
+      const maxCategories =
+        user.plan === "PRO"
+          ? PRO_QUOTA.maxEventCategories
+          : FREE_QUOTA.maxEventCategories;
+
+      if (existingCategoriesCount >= maxCategories) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `${user.plan} plan category limit exceeded. Upgrade to create more categories.`,
+        });
+      }
 
       const eventCategory = await prisma.eventCategory.create({
         data: {

@@ -1,6 +1,8 @@
 "use client";
+
 import { PropsWithChildren, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { cn } from "@/lib/utils";
@@ -69,7 +71,12 @@ export const CreateEventCategoryModal = ({
         reset();
       },
       onError: (error) => {
-        console.error("Failed to create event category:", error);
+        setIsOpen(false);
+        if (error.message.includes("plan category limit")) {
+          toast.error("Upgrade your plan to create more categories");
+        } else {
+          console.error("Failed to create event category:", error);
+        }
       },
     });
 
